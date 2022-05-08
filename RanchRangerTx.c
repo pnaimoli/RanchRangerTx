@@ -63,8 +63,8 @@
 /* Application header files */
 #include "smartrf_settings/smartrf_settings.h"
 
-#define RFEASYLINKTX_TASK_STACK_SIZE    1024
-#define RFEASYLINKTX_TASK_PRIORITY      2
+#define RANCHRANGERTX_TASK_STACK_SIZE    1024
+#define RANCHRANGERTX_TASK_PRIORITY      2
 
 /* https://e2e.ti.com/support/wireless-connectivity/sub-1-ghz-group/sub-1-ghz/f/sub-1-ghz-forum/1045315/cc1310-waking-up-the-cpu-using-the-sensor-controller */
 Semaphore_Struct scsSemaphore;
@@ -72,7 +72,7 @@ Semaphore_Handle scsSemaphoreHandle;
 
 Task_Struct txTask;    /* not static so you can see in ROV */
 Task_Params txTaskParams;
-uint8_t txTaskStack[RFEASYLINKTX_TASK_STACK_SIZE];
+uint8_t txTaskStack[RANCHRANGERTX_TASK_STACK_SIZE];
 
 /* Pin driver handle */
 PIN_Handle ledPinHandle;
@@ -143,7 +143,7 @@ void buttonCb(PIN_Handle handle, PIN_Id pinId)
     Semaphore_post(scsSemaphoreHandle);
 } // taskAlertCallback
 
-static void rfEasyLinkTxFnx(UArg arg0, UArg arg1)
+static void ranchRangerTxFnx(UArg arg0, UArg arg1)
 {
     // Initialize the SCIF operating system abstraction layer
     scifOsalInit();
@@ -264,12 +264,12 @@ int main(void)
     PIN_setOutputValue(ledPinHandle, Board_PIN_LED2, 0);
 
     Task_Params_init(&txTaskParams);
-    txTaskParams.stackSize = RFEASYLINKTX_TASK_STACK_SIZE;
-    txTaskParams.priority = RFEASYLINKTX_TASK_PRIORITY;
+    txTaskParams.stackSize = RANCHRANGERTX_TASK_STACK_SIZE;
+    txTaskParams.priority = RANCHRANGERTX_TASK_PRIORITY;
     txTaskParams.stack = &txTaskStack;
     txTaskParams.arg0 = (UInt)1000000;
 
-    Task_construct(&txTask, rfEasyLinkTxFnx, &txTaskParams, NULL);
+    Task_construct(&txTask, ranchRangerTxFnx, &txTaskParams, NULL);
 
     /* Start BIOS */
     BIOS_start();
